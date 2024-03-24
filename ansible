@@ -1,0 +1,58 @@
+step 1: launch 2 instance (1 master , 1 slave) 
+system requirements
+AMI--> amazon linux 2
+instance type--> te.micro
+security type --> all traffic
+terminal --> mobaxterm
+
+step 2[root]: install ansible
+sudo amazon-linux-extras install ansible2 -y
+
+step 3[root]: to check ansible version
+ansible --version
+
+step 4[root]:
+vi/etc/ansible/hosts
+
+provide groupname [demo]
+slave1 private Ip  ***.**.**.***
+slave2 private Ip  ***.**.**.***
+
+step 5[root]:
+vi/etc/ansible/ansible.cfg
+
+inventory = /etc/ansible/hosts
+sudo_user = root
+
+step 6[root]: create user ansible in all 2 server
+useradd ansible
+passwd ansible
+
+step 7[root]: visudo
+// #allow root to run any
+root ALL=(ALL) ALL
+ansible ALL=(ALL) NOPASSWD: ALL
+
+step 8[ansible]: switch to ansible
+su - ansible
+
+step 9[ansible]:to access slave node1 from master node
+ssh slavenodePrivateIp
+yes
+
+step 10[root]in master and slave:
+vi/etc/ssh/sshd_config
+give ---> permitRootLogin  yes
+give ---> #PasswordAuthentication no
+give ---> PasswordAuthentication yes
+
+step 11[root]master:
+ssh-keygen
+
+cd .ssh/
+
+step 12[master.ssh]:
+ssh-copy-id ansible@slavePrivateIp
+
+step 13[root master]:
+ansible demo -m ping
